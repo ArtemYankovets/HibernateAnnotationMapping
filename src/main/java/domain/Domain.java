@@ -4,9 +4,12 @@ import bl.HibernateUtil;
 import entity.Address;
 import entity.Employee;
 import entity.Project;
-import org.hibernate.Session;
+import service.AddressService;
+import service.EmployeeService;
+import service.ProjectService;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.HashSet;
@@ -14,16 +17,19 @@ import java.util.Set;
 
 public class Domain {
 
-    public static void main(String[] args) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-
-        session.beginTransaction();
+    public static void main(String[] args) throws SQLException {
+        AddressService addressService = new AddressService();
+        EmployeeService employeeService = new EmployeeService();
+        ProjectService projectService = new ProjectService();
 
         Address address = new Address();
-        address.setCountry("DCNY");
-        address.setCity("Gothan City");
+        address.setCountry("DC");
+        address.setCity("Gotham city");
         address.setStreet("Arkham street 1");
         address.setPostCode("12345");
+
+        Project project = new Project();
+        project.setTitle("Gotham PD");
 
         Employee employee = new Employee();
         employee.setFirstName("James");
@@ -32,18 +38,27 @@ public class Domain {
         employee.setBirthday(Date.valueOf(birthday));
         employee.setAddress(address);
 
-        Project project = new Project();
-        project.setTitle("Gothan City Police Department Commissioner");
+// --------------------------------------------------------------------
+        addressService.add(address);
 
+//        If we used both options we will have duplicates in table "PROJECT"
+
+//        Option 1:
+//        Set<Employee> employees = new HashSet<>();
+//        employees.add(employee);
+//        project.setEmployees(employees);
+//
+//        projectService.add(project);
+
+
+//        Option 2:
         Set<Project> projects = new HashSet<>();
         projects.add(project);
         employee.setProjects(projects);
 
-        session.save(address);
-        session.save(employee);
-        session.save(project);
+        employeeService.add(employee);
+// --------------------------------------------------------------------
 
-        session.getTransaction().commit();
         HibernateUtil.shutdown();
     }
 }
