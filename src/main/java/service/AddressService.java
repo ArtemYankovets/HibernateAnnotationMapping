@@ -44,7 +44,7 @@ public class AddressService extends SessionUtil implements AddressDAO{
         // open session with transaction
         openTransactionSession();
 
-        String sql = "SELECT * from ADDRESS WHERE ID = :id";
+        String sql = "SELECT * FROM ADDRESS WHERE ID = :id";
 
         Session session = getSession();
         Query query = session.createNativeQuery(sql).addEntity(Address.class);
